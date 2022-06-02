@@ -3,11 +3,13 @@ module BrowserMacros
 using Base: UUID
 using Pkg.Types: EnvCache
 using Pkg.Registry: PkgInfo, RegistryInstance, reachable_registries
-using DefaultApplication: open
+using DefaultApplication
 using URIs: escapeuri
 
-include("search.jl")
-include("github.jl")
+open_browser(url) = DefaultApplication.open(url), return nothing
 
-export @google, @duckduckgo, @ddg
+include("wwwhich.jl")
+include("search.jl")
+
+export google, @google, ddg, @ddg
 end # module

@@ -2,5 +2,5 @@ using BrowserMacros
 using Test
 
 @testset "BrowserMacros.jl" begin
-    # Write your tests here.
+    @testset "Test URLs" include("test_urls.jl")
 end

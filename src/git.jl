@@ -2,6 +2,16 @@
 function wwwhich(@nospecialize(f), @nospecialize(types))
     method = which(f, types)
     url = get_method_url(method)
+    try
+        r = HTTP.request("GET", url)
+    catch e
+        @warn """BrowserMacros failed to find a valid URL for the method `$(method.name)`.
+            Please open an issue at https://github.com/adrhill/BrowserMacros.jl/issues
+            with the following information:"""
+        display(method)
+        println("Failing URL: $url")
+        return nothing
+    end
     return open_browser(url)
 end
 

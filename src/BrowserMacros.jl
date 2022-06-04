@@ -17,7 +17,7 @@ using InteractiveUtils: gen_call_with_extracted_types
 open_browser(url) = DefaultApplication.open(url), return nothing
 
 include("search.jl")
-include("wwwhich.jl")
+include("git.jl")
 
 export google, @google, ddg, @ddg
 end # module

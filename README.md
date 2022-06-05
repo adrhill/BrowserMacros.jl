@@ -30,11 +30,10 @@ Google search and DuckDuckGo can be queried from your REPL:
 @google "Why is julialang called Julia?"  
 ```
 
-Since these are regular queries, [DuckDuckGo's bangs](https://duckduckgo.com/bang) are supported, e.g. to search Google Scholar: 
+Since these are regular queries, [DuckDuckGo's bangs](https://duckduckgo.com/bang) are supported, e.g. to search for papers on Google Scholar: 
 ```julia
-@dgg "!scholar Cool paper"                     
+@dgg "!scholar Julia - A Fresh Approach to Numerical Computing"                     
 ```
-___
 
 ## How it works
 BrowserMacros constructs URLs and opens them using [DefaultApplication.jl](https://github.com/tpapp/DefaultApplication.jl). For `@wwwhich`, this currently requires looking up modules in the Registry to find the matching GitHub repository.

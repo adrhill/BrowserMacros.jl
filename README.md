@@ -1,15 +1,20 @@
-<img align="left" src="docs/src/assets/logo.svg" height="150">
+<img align="left" src="docs/src/assets/logo.svg" height="130">
 
 # BrowserMacros.jl
 
-| **Documentation**                                 | **Build Status**                    |
-|:------------------------------------------------- |:----------------------------------- |
-| [![][docs-im]][docs] [![][docs-dev-im]][docs-dev] | [![][ci-im]][ci] [![][cov-im]][cov] |
+[![][docs-im]][docs] [![][docs-dev-im]][docs-dev] [![][ci-im]][ci] [![][cov-im]][cov]
 
+---
 A collection of Julia macros to access your browser from the comfort of your REPL.  
 
-⚠️ This package is in early development, so there might be lots of edge-cases to iron out. ⚠️
+⚠️ This package is in early development, so there might be edge-cases to iron out. ⚠️
 
+## Installation 
+This package hasn't been registered yet.
+To install it, open the Julia REPL and run 
+```julia-repl
+julia> ]add https://github.com/adrhill/BrowserMacros.jl
+```
 
 ## Examples
 ### GitHub tools

@@ -1,4 +1,4 @@
-<img align="left" src="docs/src/assets/logo.png" width="250">
+<img align="left" src="docs/src/assets/logo.svg" height="150">
 
 # BrowserMacros.jl
 

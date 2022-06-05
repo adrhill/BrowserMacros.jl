@@ -3,7 +3,7 @@ function wwwhich(@nospecialize(f), @nospecialize(types))
     method = which(f, types)
     url = get_method_url(method)
     try
-        r = HTTP.request("GET", url)
+        r = request("GET", url; retries=5)
     catch e
         @warn """BrowserMacros failed to find a valid URL for the method `$(method.name)`.
             Please open an issue at https://github.com/adrhill/BrowserMacros.jl/issues
@@ -15,25 +15,38 @@ function wwwhich(@nospecialize(f), @nospecialize(types))
     return open_browser(url)
 end
 
-macro wwwhich(expr)
-    return :(wwwhich(expr))
+# macro wwwhich(expr)
+#     return :(wwwhich($expr))
+# end
+macro wwwhich(ex0)
+    return gen_call_with_extracted_types(__module__, Expr(:quote, :which), ex0)
+end
+
+macro wwwhich(ex0::Symbol)
+    ex0 = QuoteNode(ex0)
+    return :(wwwhich($__module__, $ex0))
 end
 
 function get_method_url(method::Method)
     m1 = match(r"src/(.*)", String(method.file))
     m2 = match(r"/julia/stdlib/(.*?)/(.*)", String(method.file))
     return if isnothing(m1) # part of Julia Base
-        get_base_url(method.file, method.line)
+        get_base_method_url(method.file, method.line)
     elseif !isnothing(m2) # Julia stdlib
-        get_stdlib_url(last(m2.captures), method.line)
+        get_stdlib_method_url(last(m2.captures), method.line)
     else # external repo
-        get_external_url(only(m1.captures), method.line, method.module)
+        get_external_method_url(only(m1.captures), method.line, method.module)
     end
 end
 
-get_base_url(path, ln, type="blob") = "https://github.com/JuliaLang/julia/$type/v$VERSION/base/$path#L$ln"
-get_stdlib_url(path, ln, type="blob") = "https://github.com/JuliaLang/julia/$type/v$VERSION/stdlib/$path#L$ln"
-function get_external_url(path, ln, mod::Module, type="blob")
+const JULIA_REPO_URL = "https://github.com/JuliaLang/julia"
+function get_base_method_url(path, ln, type="blob")
+    return "$JULIA_REPO_URL/$type/v$VERSION/base/$path#L$ln"
+end
+function get_stdlib_method_url(path, ln, type="blob")
+    return "$JULIA_REPO_URL/$type/v$VERSION/stdlib/$path#L$ln"
+end
+function get_external_method_url(path, ln, mod::Module, type="blob")
     uuid, version = get_dependency_info(rootmodule(mod))
     repo_url = uuid2url(uuid)
     return "$repo_url/$type/v$version/src/$path#L$ln"
@@ -45,9 +58,8 @@ function rootmodule(m)
     return rootmodule(pm)
 end
 
-function get_dependency_info(dep::Module)::Tuple{UUID, VersionNumber}
-    env = EnvCache()
-    return only((uuid, v.version) for (uuid, v) in env.manifest.deps if v.name == "$dep")
+function get_dependency_info(dep::Module)::Tuple{UUID,VersionNumber}
+    return only((uuid, v.version) for (uuid, v) in dependencies() if v.name == "$dep")
 end
 
 function uuid2url(uuid::UUID)
@@ -73,7 +85,7 @@ For more information, refer to the
 
 See also: `@less`, `@edit`.
 """
-:@wwwhich
+wwwhich
 
 """
     @wwwhich f(args...)

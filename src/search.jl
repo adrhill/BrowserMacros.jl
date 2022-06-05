@@ -5,7 +5,7 @@ macro google(query)
 end
 
 get_ddg_url(query) = "https://duckduckgo.com/?q=$(escapeuri(query))"
-ddg(query::AbstractString) = open_browser(get_google_url(query))
+ddg(query::AbstractString) = open_browser(get_ddg_url(query))
 macro ddg(query)
     return :(ddg($query))
 end

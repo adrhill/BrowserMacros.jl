@@ -8,6 +8,9 @@
 
 A collection of Julia macros to access your browser from the comfort of your REPL.  
 
+⚠️ This package is in early development, so there might be lots of edge-cases to iron out. ⚠️
+
+
 ## Examples
 ### GitHub tools
 The macro `@wwwhich` (world-wide-`which`) followed by a method call will open a new GitHub tab in your browser, showing the exact line of code that is run:
@@ -19,10 +22,11 @@ This also works with code from external packages!
 
 ![](./docs/src/assets/wwwhich.png)
 
-GitHub's git blame view can be opened in the same fashion:
+<!-- GitHub's git blame view can be opened in the same fashion:
 ```julia
 @blame exp(5) 
-```
+``` 
+-->
 
 ### Search engines
 Google search and DuckDuckGo can be queried from your REPL:
@@ -35,11 +39,12 @@ Since these are regular queries, [DuckDuckGo's bangs](https://duckduckgo.com/ban
 @dgg "!scholar Julia - A Fresh Approach to Numerical Computing"                     
 ```
 
-## How it works
-BrowserMacros constructs URLs and opens them using [DefaultApplication.jl](https://github.com/tpapp/DefaultApplication.jl). For `@wwwhich`, this currently requires looking up modules in the Registry to find the matching GitHub repository.
+## How does it work?
+BrowserMacros constructs URLs and opens them using [DefaultApplication.jl](https://github.com/tpapp/DefaultApplication.jl). 
+For `@wwwhich`, we make use of `Base.which` and look up modules in the Registry to find matching GitHub repositories.
 
-## Todo
-- [ ] Support for GitLab, SourceHut & Co.
+## To-Do
+We would love to support packages hosted on GitLab, SourceHut & Co.
 
 Contributions are very welcome!
 

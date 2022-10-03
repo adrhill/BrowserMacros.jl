@@ -2,7 +2,7 @@
 
 # BrowserMacros.jl
 
-[![][docs-im]][docs] [![][docs-dev-im]][docs-dev] [![][ci-im]][ci] [![][cov-im]][cov]
+[![][ci-im]][ci] [![][cov-im]][cov]
 
 ---
 A collection of Julia macros to access your browser from the comfort of your REPL.  
@@ -52,12 +52,6 @@ For `@wwwhich`, we make use of `Base.which` and look up modules in the Registry 
 We would love to support packages hosted on GitLab, SourceHut & Co.
 
 Contributions are very welcome!
-
-[docs-im]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs]: hhttps://adrhill.github.io/BrowserMacros.jl/stable/
-
-[docs-dev-im]: https://img.shields.io/badge/docs-main-blue.svg
-[docs-dev]: https://adrhill.github.io/BrowserMacros.jl/dev/
 
 [ci-im]: https://github.com/adrhill/BrowserMacros.jl/actions/workflows/CI.yml/badge.svg?branch=main
 [ci]: https://github.com/adrhill/BrowserMacros.jl/actions/workflows/CI.yml?query=branch%3Amain

@@ -9,14 +9,15 @@ using URIs: escapeuri
 # Imports used by `@wwwhich` to look up Repository URLs in Registry:
 using Base: UUID
 using Pkg: dependencies
-using Pkg.Registry: RegistryInstance, reachable_registries
+using Pkg.Registry: RegistryInstance, reachable_registries, init_package_info!
 using HTTP: request
 
-# Generate macro `@wwwhich` from function `wwwhich` the same way `@which` is generated:
+# Generate macro `@wwwhich` the same way `@which` is generated:
 using InteractiveUtils: gen_call_with_extracted_types
 
 open_browser(url) = DefaultApplication.open(url), return nothing
 
+include("utils.jl")
 include("search.jl")
 include("git.jl")
 

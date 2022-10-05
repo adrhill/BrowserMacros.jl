@@ -1,8 +1,9 @@
 
 function wwwhich(@nospecialize(f), @nospecialize(types))
     method = which(f, types)
-    url = get_method_url(method)
-    try
+    info = MethodInfo(method)
+    url = method_url(info)
+    try # try HTTP request before opening in browser
         r = request("GET", url; retries=5)
     catch e
         @warn """BrowserMacros failed to find a valid URL for the method `$(method.name)`.
@@ -15,11 +16,8 @@ function wwwhich(@nospecialize(f), @nospecialize(types))
     return open_browser(url)
 end
 
-# macro wwwhich(expr)
-#     return :(wwwhich($expr))
-# end
 macro wwwhich(ex0)
-    return gen_call_with_extracted_types(__module__, Expr(:quote, :which), ex0)
+    return gen_call_with_extracted_types(__module__, :wwwhich, ex0)
 end
 
 macro wwwhich(ex0::Symbol)
@@ -27,39 +25,68 @@ macro wwwhich(ex0::Symbol)
     return :(wwwhich($__module__, $ex0))
 end
 
-function get_method_url(method::Method)
-    m1 = match(r"src/(.*)", String(method.file))
-    m2 = match(r"/julia/stdlib/(.*?)/(.*)", String(method.file))
-    return if isnothing(m1) # part of Julia Base
-        get_base_method_url(method.file, method.line)
-    elseif !isnothing(m2) # Julia stdlib
-        get_stdlib_method_url(last(m2.captures), method.line)
+# Step 1: parse Method obtained from `which` into MethodInfo:
+struct MethodInfo
+    root_module::Module
+    module_name::String
+    path::String
+    version::String
+    line::Int
+    type::Symbol
+end
+
+function MethodInfo(method::Method)
+    file_path = String(method.file)
+    root_module = rootmodule(method.module)
+    line = method.line
+
+    if !ismatching(r"src", file_path) # part of Julia Base
+        module_name = "$(method.module)"
+        path = String(method.file)
+        version = ""
+        type = :base
+    elseif ismatching(r"stdlib", file_path) # part of Julia stdlib
+        m = match(r"/julia/stdlib/v(.*?)/(.*?)/src/(.*)", file_path)
+        version, module_name, path = m.captures
+        type = :stdlib
     else # external repo
-        get_external_method_url(only(m1.captures), method.line, method.module)
+        m = match(r"packages/(.*?)/.*?/src/(.*)", file_path)
+        module_name, path = m.captures
+        version = ""
+        type = :external
     end
+
+    return MethodInfo(root_module, module_name, path, version, line, type)
 end
 
-const JULIA_REPO_URL = "https://github.com/JuliaLang/julia"
-function get_base_method_url(path, ln, type="blob")
-    return "$JULIA_REPO_URL/$type/v$VERSION/base/$path#L$ln"
-end
-function get_stdlib_method_url(path, ln, type="blob")
-    return "$JULIA_REPO_URL/$type/v$VERSION/stdlib/$path#L$ln"
-end
-function get_external_method_url(path, ln, mod::Module, type="blob")
-    uuid, version = get_dependency_info(rootmodule(mod))
-    repo_url = uuid2url(uuid)
-    return "$repo_url/$type/v$version/src/$path#L$ln"
+# Step 2: Convert MethodInfo to URL:
+const JULIA_REPO = "https://github.com/JuliaLang/julia"
+const PKG_REPO = "https://github.com/JuliaLang/Pkg.jl"
+
+method_url(m::MethodInfo) = method_url(m, Val(m.type))
+
+function method_url(m::MethodInfo, ::Val{:base})
+    return "$JULIA_REPO/blob/v$VERSION/base/$(m.path)#L$(m.line)"
 end
 
-function rootmodule(m)
-    pm = parentmodule(m)
-    pm == m && return m
-    return rootmodule(pm)
+function method_url(m::MethodInfo, ::Val{:stdlib})
+    if m.module_name == "Pkg"
+        return "$PKG_REPO/blob/release-$(m.version)/src/$(m.path)#L$(m.line)"
+    end
+    return "$JULIA_REPO/blob/v$VERSION/stdlib/$(m.module_name)/src/$(m.path)#L$(m.line)"
 end
 
-function get_dependency_info(dep::Module)::Tuple{UUID,VersionNumber}
-    return only((uuid, v.version) for (uuid, v) in dependencies() if v.name == "$dep")
+function method_url(m::MethodInfo, ::Val{:external})
+    uuid, version = module_uuid(m.root_module)
+    url = uuid2url(uuid)
+    if ismatching(r"gitlab", url)
+        return "$url/~/blob/v$version/src/$(m.path)#L$(m.line)"
+    end
+    return "$url/blob/v$version/src/$(m.path)#L$(m.line)" # attempt GitHub-like URL
+end
+
+function module_uuid(m::Module)::Tuple{UUID,VersionNumber}
+    return only((uuid, p.version) for (uuid, p) in dependencies() if p.name == "$m")
 end
 
 function uuid2url(uuid::UUID)
@@ -71,8 +98,9 @@ function uuid2url(uuid::UUID)
 end
 function uuid2url(r::RegistryInstance, uuid::UUID)
     !haskey(r.pkgs, uuid) && return nothing
-    pkg = r.pkgs[uuid]
-    m = match(r"(.*).git", pkg.info.repo)
+    pkg_entry = r.pkgs[uuid]
+    init_package_info!(pkg_entry)
+    m = match(r"(.*).git", pkg_entry.info.repo)
     return only(m.captures)
 end
 

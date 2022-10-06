@@ -65,14 +65,16 @@ end
 method_url(m::MethodInfo) = method_url(m, Val(m.type))
 
 function method_url(m::MethodInfo, ::Val{:base})
-    return "$JULIA_REPO/blob/v$VERSION/base/$(m.path)#L$(m.line)"
+    return URI("$JULIA_REPO/blob/v$VERSION/base/$(m.path)#L$(m.line)")
 end
 
 function method_url(m::MethodInfo, ::Val{:stdlib})
     if m.module_name == "Pkg"
         return "$PKG_REPO/blob/release-$(m.version)/src/$(m.path)#L$(m.line)"
     end
-    return "$JULIA_REPO/blob/v$VERSION/stdlib/$(m.module_name)/src/$(m.path)#L$(m.line)"
+    return URI(
+        "$JULIA_REPO/blob/v$VERSION/stdlib/$(m.module_name)/src/$(m.path)#L$(m.line)"
+    )
 end
 
 function method_url(m::MethodInfo, ::Val{:external})
@@ -81,7 +83,7 @@ function method_url(m::MethodInfo, ::Val{:external})
     if ismatching(r"gitlab", url)
         return "$url/~/blob/v$version/src/$(m.path)#L$(m.line)"
     end
-    return "$url/blob/v$version/src/$(m.path)#L$(m.line)" # attempt GitHub-like URL
+    return URI("$url/blob/v$version/src/$(m.path)#L$(m.line)") # attempt GitHub-like URL
 end
 
 # The following functions find the URL of a module's repository

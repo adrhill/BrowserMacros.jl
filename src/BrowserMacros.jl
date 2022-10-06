@@ -4,7 +4,7 @@ module BrowserMacros
 using DefaultApplication
 
 # Escape special characters in URLs:
-using URIs: escapeuri
+using URIs: URI, escapeuri
 
 # Imports used by `@wwwhich` to look up Repository URLs in Registry:
 using Base: UUID

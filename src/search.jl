@@ -1,10 +1,10 @@
-google_url(query) = "https://www.google.com/search?q=$(escapeuri(query))"
+google_url(query) = URI("https://www.google.com/search?q=$(escapeuri(query))")
 google(query::AbstractString) = open_browser(google_url(query))
 macro google(query)
     return :(google($query))
 end
 
-ddg_url(query) = "https://duckduckgo.com/?q=$(escapeuri(query))"
+ddg_url(query) = URI("https://duckduckgo.com/?q=$(escapeuri(query))")
 ddg(query::AbstractString) = open_browser(ddg_url(query))
 macro ddg(query)
     return :(ddg($query))

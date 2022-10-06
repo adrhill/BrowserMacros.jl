@@ -15,8 +15,6 @@ using HTTP: request
 # Generate macro `@wwwhich` the same way `@which` is generated:
 using InteractiveUtils: gen_call_with_extracted_types
 
-open_browser(url) = DefaultApplication.open(url), return nothing
-
 include("utils.jl")
 include("search.jl")
 include("git.jl")

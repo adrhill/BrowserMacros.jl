@@ -1,9 +1,12 @@
+const JULIA_REPO = "https://github.com/JuliaLang/julia"
+const PKG_REPO = "https://github.com/JuliaLang/Pkg.jl"
 
 function wwwhich(@nospecialize(f), @nospecialize(types))
     method = which(f, types)
     info = MethodInfo(method)
     url = method_url(info)
-    try # try HTTP request before opening in browser
+
+    try # attempt HTTP request before opening URL in browser
         r = request("GET", url; retries=5)
     catch e
         @warn """BrowserMacros failed to find a valid URL for the method `$(method.name)`.
@@ -55,14 +58,10 @@ function MethodInfo(method::Method)
         version = ""
         type = :external
     end
-
     return MethodInfo(root_module, module_name, path, version, line, type)
 end
 
 # Step 2: Convert MethodInfo to URL:
-const JULIA_REPO = "https://github.com/JuliaLang/julia"
-const PKG_REPO = "https://github.com/JuliaLang/Pkg.jl"
-
 method_url(m::MethodInfo) = method_url(m, Val(m.type))
 
 function method_url(m::MethodInfo, ::Val{:base})
@@ -85,6 +84,8 @@ function method_url(m::MethodInfo, ::Val{:external})
     return "$url/blob/v$version/src/$(m.path)#L$(m.line)" # attempt GitHub-like URL
 end
 
+# The following functions find the URL of a module's repository
+# by looking up its UUID in the available package registries:
 function module_uuid(m::Module)::Tuple{UUID,VersionNumber}
     return only((uuid, p.version) for (uuid, p) in dependencies() if p.name == "$m")
 end
@@ -107,21 +108,19 @@ end
 """
     wwwhich(f, (types,))
 
-`@which` using the power of the world-wide-web. Opens a GitHub or GitLab tab in the
-default browser that points to the line of code returned by [`which`](@ref).
-For more information, refer to the
+`@which` using the power of the world-wide-web. Opens a GitHub tab in the default browser
+that points to the line of code returned by `which`.
 
-See also: `@less`, `@edit`.
+See also: [`which`](@ref).
 """
 wwwhich
 
 """
     @wwwhich f(args...)
 
-`@which` using the power of the world-wide-web. Opens a GitHub or GitLab tab in the
-default browser that points to the line of code returned by [`which`](@ref).
-For more information, refer to the
+`@which` using the power of the world-wide-web. Opens a GitHub tab in the default browser
+that points to the line of code returned by `@which`.
 
-See also: `@less`, `@edit`.
+See also: [`@which`](@ref).
 """
 :@wwwhich

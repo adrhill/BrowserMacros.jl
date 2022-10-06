@@ -10,11 +10,11 @@ A collection of Julia macros to access your browser from the comfort of your REP
 ⚠️ This package is in early development, so there will be a lot of edge-cases to iron out. ⚠️
 
 ## Installation 
-This package hasn't been registered yet.
-To install it, open the Julia REPL and run 
+This package hasn't been registered yet. To install it, open the Julia REPL and run 
 ```julia-repl
 julia> ]add https://github.com/adrhill/BrowserMacros.jl
 ```
+BrowserMacros currently requires Julia **≥1.7**.
 
 ## Functionality
 ### GitHub tools

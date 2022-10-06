@@ -70,7 +70,7 @@ end
 
 function method_url(m::MethodInfo, ::Val{:stdlib})
     if m.module_name == "Pkg"
-        return "$PKG_REPO/blob/release-$(m.version)/src/$(m.path)#L$(m.line)"
+        return URI("$PKG_REPO/blob/release-$(m.version)/src/$(m.path)#L$(m.line)")
     end
     return URI(
         "$JULIA_REPO/blob/v$VERSION/stdlib/$(m.module_name)/src/$(m.path)#L$(m.line)"
@@ -81,7 +81,7 @@ function method_url(m::MethodInfo, ::Val{:external})
     uuid, version = module_uuid(m.root_module)
     url = uuid2url(uuid)
     if ismatching(r"gitlab", url)
-        return "$url/~/blob/v$version/src/$(m.path)#L$(m.line)"
+        return URI("$url/~/blob/v$version/src/$(m.path)#L$(m.line)")
     end
     return URI("$url/blob/v$version/src/$(m.path)#L$(m.line)") # attempt GitHub-like URL
 end

@@ -4,34 +4,26 @@
 
 [![][ci-im]][ci] [![][cov-im]][cov]
 
----
 A collection of Julia macros to access your browser from the comfort of your REPL.  
-
-⚠️ This package is in early development, so there will be a lot of edge-cases to iron out. ⚠️
 
 ## Installation 
 This package hasn't been registered yet. To install it, open the Julia REPL and run 
 ```julia-repl
 julia> ]add https://github.com/adrhill/BrowserMacros.jl
 ```
-BrowserMacros currently requires Julia **≥1.7**.
+
+⚠️ BrowserMacros currently requires Julia **≥1.7** and is in early development, so there will be a lot of edge-cases to iron out. ⚠️
 
 ## Functionality
-### GitHub tools
+### GitHub lookup
 The macro `@wwwhich` ("world-wide-which") followed by a method call will open a new GitHub tab in your browser, showing the exact line of code that is run:
 ```julia
 @wwwhich sqrt(2.0) 
 ```
 
-This also works with code from external packages!
-
 ![](https://github.com/adrhill/BrowserMacros.jl/blob/gh-pages/assets/wwwhich.png)
 
-<!-- GitHub's git blame view can be opened in the same fashion:
-```julia
-@blame exp(5) 
-``` 
--->
+This also works with code from external packages!
 
 ### Search engines
 Google search and DuckDuckGo can be queried from your REPL:

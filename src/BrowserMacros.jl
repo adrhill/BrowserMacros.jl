@@ -21,4 +21,5 @@ include("git.jl")
 
 export google, @google, ddg, @ddg
 export wwwhich, @wwwhich
+export method_url, google_url, ddg_url # low-level functions used to construct URLs
 end # module

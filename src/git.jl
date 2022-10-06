@@ -3,8 +3,7 @@ const PKG_REPO = "https://github.com/JuliaLang/Pkg.jl"
 
 function wwwhich(@nospecialize(f), @nospecialize(types))
     method = which(f, types)
-    info = MethodInfo(method)
-    url = method_url(info)
+    url = method_url(method)
 
     try # attempt HTTP request before opening URL in browser
         r = request("GET", url; retries=5)
@@ -29,6 +28,8 @@ macro wwwhich(ex0::Symbol)
 end
 
 # Step 1: parse Method obtained from `which` into MethodInfo:
+method_url(m::Method) = method_url(MethodInfo(m))
+
 struct MethodInfo
     method_name::String
     root_module::Module
@@ -93,10 +94,9 @@ end
 function module_uuid(m::MethodInfo)::Tuple{UUID,VersionNumber}
     deps = dependencies()
     ret = [(uuid, pkg.version) for (uuid, pkg) in deps if pkg.name == "$(m.root_module)"]
-    isempty(ret) && error(
-        """Could not find module $(m.root_module) of method `$(m.method_name)`
-        in project dependencies."""
-    )
+    isempty(ret) &&
+        error("""Could not find module $(m.root_module) of method `$(m.method_name)`
+              in project dependencies.""")
     return only(ret)
 end
 

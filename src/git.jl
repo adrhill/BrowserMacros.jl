@@ -30,6 +30,7 @@ end
 
 # Step 1: parse Method obtained from `which` into MethodInfo:
 struct MethodInfo
+    method_name::String
     root_module::Module
     module_name::String
     path::String
@@ -39,6 +40,7 @@ struct MethodInfo
 end
 
 function MethodInfo(method::Method)
+    method_name = String(method.name)
     file_path = String(method.file)
     root_module = rootmodule(method.module)
     line = method.line
@@ -58,7 +60,7 @@ function MethodInfo(method::Method)
         version = ""
         type = :external
     end
-    return MethodInfo(root_module, module_name, path, version, line, type)
+    return MethodInfo(method_name, root_module, module_name, path, version, line, type)
 end
 
 # Step 2: Convert MethodInfo to URL:
@@ -78,7 +80,7 @@ function method_url(m::MethodInfo, ::Val{:stdlib})
 end
 
 function method_url(m::MethodInfo, ::Val{:external})
-    uuid, version = module_uuid(m.root_module)
+    uuid, version = module_uuid(m)
     url = uuid2url(uuid)
     if ismatching(r"gitlab", url)
         return URI("$url/~/blob/v$version/src/$(m.path)#L$(m.line)")
@@ -88,8 +90,14 @@ end
 
 # The following functions find the URL of a module's repository
 # by looking up its UUID in the available package registries:
-function module_uuid(m::Module)::Tuple{UUID,VersionNumber}
-    return only((uuid, p.version) for (uuid, p) in dependencies() if p.name == "$m")
+function module_uuid(m::MethodInfo)::Tuple{UUID,VersionNumber}
+    deps = dependencies()
+    ret = [(uuid, pkg.version) for (uuid, pkg) in deps if pkg.name == "$(m.root_module)"]
+    isempty(ret) && error(
+        """Could not find module $(m.root_module) of method `$(m.method_name)`
+        in project dependencies."""
+    )
+    return only(ret)
 end
 
 function uuid2url(uuid::UUID)

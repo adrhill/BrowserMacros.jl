@@ -1,5 +1,6 @@
 open_browser(url) = DefaultApplication.open(url), return nothing
 
+captures(r::Regex, s) = match(r, s).captures
 ismatching(r::Regex, s) = !isnothing(match(r, s))
 
 function rootmodule(m)

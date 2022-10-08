@@ -1,4 +1,4 @@
-using BrowserMacros: MethodInfo, method_url, google_url, ddg_url
+using BrowserMacros
 using URIs: URI
 
 # Load some modules to test wwwhich's URLs:
@@ -14,20 +14,17 @@ using DefaultApplication
 
 # Base
 m = @which sqrt(1.0)
-info = @inferred MethodInfo(m)
-url = @inferred method_url(info)
+url = @inferred method_url(m)
 @test !isnothing(url)
 
 # stdlib
 m = @which @which sqrt(1.0)
-info = @inferred MethodInfo(m)
-url = @inferred method_url(info)
+url = @inferred method_url(m)
 @test !isnothing(url)
 
 # External packages
 m = Base.which(DefaultApplication.open, (String,))
-info = @inferred MethodInfo(m)
-url = @inferred method_url(info)
+url = @inferred method_url(m)
 @test url == URI(
     "https://github.com/tpapp/DefaultApplication.jl/blob/v1.1.0/src/DefaultApplication.jl#L18",
 )

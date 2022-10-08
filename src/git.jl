@@ -27,76 +27,46 @@ macro wwwhich(ex0::Symbol)
     return :(wwwhich($__module__, $ex0))
 end
 
-# Step 1: parse Method obtained from `which` into MethodInfo:
-method_url(m::Method) = method_url(MethodInfo(m))
+# Step 1: determine type of repository
+method_url(m::Method) = method_url(m, Val(repotype(m)))
 
-struct MethodInfo
-    method_name::String
-    root_module::Module
-    module_name::String
-    path::String
-    version::String
-    line::Int
-    type::Symbol
+function repotype(m::Method)
+    path = String(m.file)
+    !ismatching(r"src", path) && return :Base
+    ismatching(r"stdlib", path) && return :stdlib
+    return :external
 end
 
-function MethodInfo(method::Method)
-    method_name = String(method.name)
-    file_path = String(method.file)
-    root_module = rootmodule(method.module)
-    line = method.line
+# Step 2: assemble URL
+method_url(m::Method, ::Val{:Base}) = URI(url(m))
 
-    if !ismatching(r"src", file_path) # part of Julia Base
-        module_name = "$(method.module)"
-        path = String(method.file)
-        version = ""
-        type = :base
-    elseif ismatching(r"stdlib", file_path) # part of Julia stdlib
-        m = match(r"/julia/stdlib/v(.*?)/(.*?)/src/(.*)", file_path)
-        version, module_name, path = m.captures
-        type = :stdlib
-    else # external repo
-        m = match(r"packages/(.*?)/.*?/src/(.*)", file_path)
-        module_name, path = m.captures
-        version = ""
-        type = :external
+function method_url(m::Method, ::Val{:stdlib})
+    ver, package_name, path = captures(r"/stdlib/v(.*?)/(.*?)/src/(.*)", String(m.file))
+    if package_name == "Pkg"
+        return URI("$PKG_REPO/blob/release-$ver/src/$path#L$(m.line)")
     end
-    return MethodInfo(method_name, root_module, module_name, path, version, line, type)
+    return URI("$JULIA_REPO/blob/v$VERSION/stdlib/$package_name/src/$path#L$(m.line)")
 end
 
-# Step 2: Convert MethodInfo to URL:
-method_url(m::MethodInfo) = method_url(m, Val(m.type))
-
-function method_url(m::MethodInfo, ::Val{:base})
-    return URI("$JULIA_REPO/blob/v$VERSION/base/$(m.path)#L$(m.line)")
-end
-
-function method_url(m::MethodInfo, ::Val{:stdlib})
-    if m.module_name == "Pkg"
-        return URI("$PKG_REPO/blob/release-$(m.version)/src/$(m.path)#L$(m.line)")
-    end
-    return URI(
-        "$JULIA_REPO/blob/v$VERSION/stdlib/$(m.module_name)/src/$(m.path)#L$(m.line)"
-    )
-end
-
-function method_url(m::MethodInfo, ::Val{:external})
+function method_url(m::Method, ::Val{:external})
+    path = only(captures(r"/src/(.*)", String(m.file)))
     uuid, version = module_uuid(m)
     url = uuid2url(uuid)
     if ismatching(r"gitlab", url)
-        return URI("$url/~/blob/v$version/src/$(m.path)#L$(m.line)")
+        return URI("$url/~/blob/v$version/src/$path#L$(m.line)")
     end
-    return URI("$url/blob/v$version/src/$(m.path)#L$(m.line)") # attempt GitHub-like URL
+    return URI("$url/blob/v$version/src/$path#L$(m.line)") # attempt GitHub-like URL
 end
 
 # The following functions find the URL of a module's repository
 # by looking up its UUID in the available package registries:
-function module_uuid(m::MethodInfo)::Tuple{UUID,VersionNumber}
+function module_uuid(m::Method)::Tuple{UUID,VersionNumber}
     deps = dependencies()
-    ret = [(uuid, pkg.version) for (uuid, pkg) in deps if pkg.name == "$(m.root_module)"]
-    isempty(ret) &&
-        error("""Could not find module $(m.root_module) of method `$(m.method_name)`
-              in project dependencies.""")
+    root_module = rootmodule(m.module)
+    ret = [(uuid, pkg.version) for (uuid, pkg) in deps if pkg.name == "$root_module"]
+    isempty(ret) && error(
+        "Could not find module $root_module of method `$(m.name)` in project dependencies.",
+    )
     return only(ret)
 end
 

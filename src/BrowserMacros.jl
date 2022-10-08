@@ -7,7 +7,7 @@ using DefaultApplication
 using URIs: URI, escapeuri
 
 # Imports used by `@wwwhich` to look up Repository URLs in Registry:
-using Base: UUID
+using Base: UUID, url
 using Pkg: dependencies
 using Pkg.Registry: RegistryInstance, reachable_registries, init_package_info!
 using HTTP: request

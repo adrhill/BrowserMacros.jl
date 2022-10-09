@@ -38,7 +38,11 @@ Since these are regular queries, [DuckDuckGo's bangs](https://duckduckgo.com/ban
 
 ## How does it work?
 BrowserMacros constructs URLs and opens them using [DefaultApplication.jl](https://github.com/tpapp/DefaultApplication.jl). 
-For `@wwwhich`, we make use of InteractiveUtils' `which` and look up modules in the Registry to find matching GitHub repositories.
+`@wwwhich` works by 
+1. finding the corresponding method using InteractiveUtils' `which`
+2. determining the UUID of the module containing the method 
+3. looking up the UUID in the reachable registries to find the matching GitHub repository
+4. constructing a permalink to the relevant line of code
 
 ## To-Do
 Support for packages hosted on GitLab, SourceHut & Co.

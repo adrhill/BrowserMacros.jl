@@ -7,9 +7,10 @@ using DefaultApplication
 using URIs: URI, escapeuri
 
 # Imports used by `@wwwhich` to look up Repository URLs in Registry:
-using Base: UUID, url
-using Pkg: dependencies
-using Pkg.Registry: RegistryInstance, reachable_registries, init_package_info!
+using Base: UUID, url, load_path
+using Pkg.Registry: reachable_registries
+using Pkg.Operations: find_urls
+using Pkg.Types: EnvCache, manifest_info
 using HTTP: request
 
 # Generate macro `@wwwhich` the same way `@which` is generated:

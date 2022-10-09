@@ -37,8 +37,8 @@ function repotype(m::Method)
     return :external
 end
 
-# Step 2: assemble URL
-method_url(m::Method, ::Val{:Base}) = URI(url(m))
+# Step 2: assemble URL using heuristics
+method_url(m::Method, ::Val{:Base}) = URI(Base.url(m))
 
 function method_url(m::Method, ::Val{:stdlib})
     ver, package_name, path = captures(r"/stdlib/v(.*?)/(.*?)/src/(.*)", String(m.file))
@@ -50,39 +50,37 @@ end
 
 function method_url(m::Method, ::Val{:external})
     path = only(captures(r"/src/(.*)", String(m.file)))
-    uuid, version = module_uuid(m)
-    url = uuid2url(uuid)
+    uuid, version = uuid_and_version(m)
+    url = repo_url(uuid)
     if ismatching(r"gitlab", url)
         return URI("$url/~/blob/v$version/src/$path#L$(m.line)")
     end
     return URI("$url/blob/v$version/src/$path#L$(m.line)") # attempt GitHub-like URL
 end
 
-# The following functions find the URL of a module's repository
-# by looking up its UUID in the available package registries:
-function module_uuid(m::Method)::Tuple{UUID,VersionNumber}
-    deps = dependencies()
-    root_module = rootmodule(m.module)
-    ret = [(uuid, pkg.version) for (uuid, pkg) in deps if pkg.name == "$root_module"]
-    isempty(ret) && error(
-        "Could not find module $root_module of method `$(m.name)` in project dependencies.",
+# Step 3: use Pkg internals to find repository URL
+function uuid_and_version(m::Method)
+    dep_name = "$(rootmodule(m.module))"
+    for path in load_path()
+        ismatching(r"julia/stdlib", path) && continue
+        env = EnvCache(path)
+        uuid = get(env.project.deps, dep_name, nothing)
+        isnothing(uuid) && continue # look up next environment in LOAD_PATH
+
+        entry = manifest_info(env.manifest, uuid)
+        version = hasproperty(entry, :version) ? entry.version : nothing
+        return uuid, version
+    end
+    throw(
+        ErrorException(
+            "Could not find module $dep_name of method `$(m.name)` in project dependencies."
+        ),
     )
-    return only(ret)
 end
 
-function uuid2url(uuid::UUID)
-    for reg in reachable_registries()
-        r = uuid2url(reg, uuid)
-        !isnothing(r) && return r
-    end
-    throw(ErrorException("Couldn't find module with UUID $uuid in reachable registries."))
-end
-function uuid2url(r::RegistryInstance, uuid::UUID)
-    !haskey(r.pkgs, uuid) && return nothing
-    pkg_entry = r.pkgs[uuid]
-    init_package_info!(pkg_entry)
-    m = match(r"(.*).git", pkg_entry.info.repo)
-    return only(m.captures)
+function repo_url(uuid::UUID)
+    urls = find_urls(reachable_registries(), uuid)
+    return only(captures(r"(.*).git", first(urls)))
 end
 
 """

@@ -50,36 +50,34 @@ end
 
 function method_url(m::Method, ::Val{:external})
     path = only(captures(r"/src/(.*)", String(m.file)))
-    uuid, version = uuid_and_version(m)
-    url = repo_url(uuid)
+    id = PkgId(m.module)
+    url = _url(id)
+    ver = _version(id)
     if ismatching(r"gitlab", url)
-        return URI("$url/~/blob/v$version/src/$path#L$(m.line)")
+        return URI("$url/~/blob/v$ver/src/$path#L$(m.line)")
     end
-    return URI("$url/blob/v$version/src/$path#L$(m.line)") # attempt GitHub-like URL
+    return URI("$url/blob/v$ver/src/$path#L$(m.line)") # attempt GitHub-like URL
 end
 
 # Step 3: use Pkg internals to find repository URL
-function uuid_and_version(m::Method)
-    dep_name = "$(rootmodule(m.module))"
+_manifest(loadpath) = read_manifest(manifestfile_path(dirname(loadpath)))
+
+function _version(id::PkgId)
     for path in load_path()
         ismatching(r"julia/stdlib", path) && continue
-        env = EnvCache(path)
-        uuid = get(env.project.deps, dep_name, nothing)
-        isnothing(uuid) && continue # look up next environment in LOAD_PATH
-
-        entry = manifest_info(env.manifest, uuid)
-        version = hasproperty(entry, :version) ? entry.version : nothing
-        return uuid, version
+        manifest = _manifest(path)
+        pkg_entry = get(manifest, id.uuid, nothing)
+        ver = hasproperty(pkg_entry, :version) ? pkg_entry.version : nothing
+        isnothing(ver) && continue # look up next environment in LOAD_PATH
+        return ver
     end
-    throw(
-        ErrorException(
-            "Could not find module $dep_name of method `$(m.name)` in project dependencies."
-        ),
-    )
+    throw(ErrorException("Could not find module $id in project dependencies."))
 end
 
-function repo_url(uuid::UUID)
-    urls = find_urls(reachable_registries(), uuid)
+function _url(id::PkgId)
+    urls = find_urls(reachable_registries(), id.uuid)
+    isempty(urls) &&
+        throw(ErrorException("Could not find module $id in reachable registries."))
     return only(captures(r"(.*).git", first(urls)))
 end
 

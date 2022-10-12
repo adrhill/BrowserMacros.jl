@@ -7,10 +7,9 @@
 Julia macros to access your browser from the comfort of your REPL.  
 
 ## Installation 
-This package hasn't been registered yet. 
-To install it, open the Julia REPL and run 
+To install BrowserMacros, open the Julia REPL and run 
 ```julia-repl
-julia> ]add https://github.com/adrhill/BrowserMacros.jl
+julia> ]add BrowserMacros
 ```
 
 ⚠️ BrowserMacros currently requires Julia **≥1.7** and is in early development, 
@@ -51,9 +50,9 @@ BrowserMacros constructs URLs and opens them using [DefaultApplication.jl](https
 4. constructing a permalink to the relevant line of code
 
 ## To-Do
-Support for packages hosted on GitLab, SourceHut & Co.
+* Support for packages hosted on GitLab, SourceHut & Co.
 
-Contributions are more than welcome!
+**Contributions are more than welcome!**
 
 [ci-im]: https://github.com/adrhill/BrowserMacros.jl/actions/workflows/CI.yml/badge.svg?branch=main
 [ci]: https://github.com/adrhill/BrowserMacros.jl/actions/workflows/CI.yml?query=branch%3Amain

@@ -23,7 +23,7 @@ function method_url(m::Method, ::Val{:stdlib})
 end
 
 function method_url(m::Method, ::Val{:external})
-    path = only(captures(r"/src/(.*)", String(m.file)))
+    path = onlycapture(r"/src/(.*)", String(m.file))
     id = PkgId(m.module)
     url = _url(id)
     ver = _version(id)
@@ -50,5 +50,11 @@ end
 function _url(id::PkgId)
     urls = find_urls(reachable_registries(), id.uuid)
     isempty(urls) && error("Could not find module $id in reachable registries.")
-    return only(captures(r"(.*).git", first(urls)))
+    return first(splitext(first(urls))) # strip ".git" ending
 end
+
+# To avoid code duplication, repo_url trims method_url until the fifth "/", e.g.:
+#  https://github.com/foo/Bar.jl/blob/v0.1.0/src/qux.jl#L7 turns to
+#  https://github.com/foo/Bar.jl
+repo_url(m::Method) = _repo_url(method_url(m))
+_repo_url(url::URI) = URI(onlycapture(r"((?:.*?\/){4}(?:.*?))\/", url.uri))

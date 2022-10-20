@@ -13,6 +13,7 @@ function wwwhich(@nospecialize(f), @nospecialize(types), open_browser)
     with the following information:"""
     display(method)
     println("Failing URL: $url")
+    return nothing
 end
 
 macro wwwhich(ex0, kwargs...)

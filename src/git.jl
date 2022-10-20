@@ -1,7 +1,10 @@
 const JULIA_REPO = "https://github.com/JuliaLang/julia"
 const PKG_REPO = "https://github.com/JuliaLang/Pkg.jl"
 
-function wwwhich(@nospecialize(f), @nospecialize(types))
+function wwwhich(@nospecialize(f), @nospecialize(types); open_browser=true)
+    return wwwhich(f, types, open_browser)
+end
+function wwwhich(@nospecialize(f), @nospecialize(types), open_browser)
     method = which(f, types)
     url = method_url(method)
 
@@ -15,16 +18,17 @@ function wwwhich(@nospecialize(f), @nospecialize(types))
         println("Failing URL: $url")
         return nothing
     end
-    return open_browser(url)
+    open_browser && DefaultApplication.open(url)
+    return url
 end
 
-macro wwwhich(ex0)
-    return gen_call_with_extracted_types(__module__, :wwwhich, ex0)
+macro wwwhich(ex0, kwargs...)
+    return gen_call_with_extracted_types(__module__, :wwwhich, ex0, map(esc, kwargs))
 end
 
-macro wwwhich(ex0::Symbol)
+macro wwwhich(ex0::Symbol, kwargs...)
     ex0 = QuoteNode(ex0)
-    return :(wwwhich($__module__, $ex0))
+    return :(wwwhich($__module__, $ex0; $(map(esc, kwargs)...)))
 end
 
 # Step 1: determine type of repository

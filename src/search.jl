@@ -1,13 +1,19 @@
-google_url(query) = URI("https://www.google.com/search?q=$(escapeuri(query))")
-google(query::AbstractString) = open_browser(google_url(query))
-macro google(query)
-    return :(google($query))
+function google(query::AbstractString; open_browser=true)
+    url = URI("https://www.google.com/search?q=$(escapeuri(query))")
+    open_browser && DefaultApplication.open(url)
+    return url
+end
+macro google(query, kwargs...)
+    return :(google($query; $(map(esc, kwargs)...)))
 end
 
-ddg_url(query) = URI("https://duckduckgo.com/?q=$(escapeuri(query))")
-ddg(query::AbstractString) = open_browser(ddg_url(query))
-macro ddg(query)
-    return :(ddg($query))
+function ddg(query::AbstractString; open_browser=true)
+    url = URI("https://duckduckgo.com/?q=$(escapeuri(query))")
+    open_browser && DefaultApplication.open(url)
+    return url
+end
+macro ddg(query, kwargs...)
+    return :(ddg($query; $(map(esc, kwargs)...)))
 end
 
 """
@@ -20,6 +26,9 @@ Also usable as the macro [`@google`](@ref).
 ```julia-repl
 julia> google("Why is julialang called Julia?")
 ```
+```julia-repl
+julia> url = google("Why is julialang called Julia?"; open_browser=false)
+```
 
 See also: [`ddg`](@ref).
 """
@@ -31,9 +40,12 @@ google
 Open a tab with the specified Google search query in the default browser.
 Also usable as the function [`google`](@ref).
 
-## Example
+## Examples
 ```julia-repl
 julia> @google "Why is julialang called Julia?"
+```
+```julia-repl
+julia> url = @google "Why is julialang called Julia?" open_browser=false
 ```
 
 See also: [`@ddg`](@ref).
@@ -46,12 +58,15 @@ See also: [`@ddg`](@ref).
 Open a tab with the specified DuckDuckGo search query in the default browser.
 Also usable as the macro [`@ddg`](@ref).
 
-## Example
+## Examples
 ```julia-repl
 julia> ddg("Why is julialang called Julia?")
 ```
 ```julia-repl
-julia> @ddg "!gi Julia Logo"
+julia> ddg("!gi Julia Logo")
+```
+```julia-repl
+julia> url = ddg("!gi Julia Logo"; open_browser=false)
 ```
 
 See also: [`google`](@ref).
@@ -64,12 +79,15 @@ ddg
 Open a tab with the specified Google search query in the default browser.
 Also usable as the function [`ddg`](@ref).
 
-## Example
+## Examples
 ```julia-repl
 julia> @ddg "Why is julialang called Julia?"
 ```
 ```julia-repl
 julia> @ddg "!gi Julia Logo"
+```
+```julia-repl
+julia> url = @ddg "!gi Julia Logo" open_browser=false
 ```
 
 See also: [`@google`](@ref).

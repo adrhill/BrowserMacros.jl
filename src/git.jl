@@ -89,6 +89,14 @@ end
 `@which` using the power of the world-wide-web. Opens a GitHub tab in the default browser
 that points to the line of code returned by `which`.
 
+## Examples
+```julia-repl
+julia> wwwhich(sqrt, (Float32,))
+```
+```julia-repl
+julia> url = wwwhich(sqrt, (Float32,); open_browser=false)
+```
+
 See also: [`which`](@ref).
 """
 wwwhich
@@ -98,6 +106,14 @@ wwwhich
 
 `@which` using the power of the world-wide-web. Opens a GitHub tab in the default browser
 that points to the line of code returned by `@which`.
+
+## Examples
+```julia-repl
+julia> @wwwhich sqrt(5.0)
+```
+```julia-repl
+julia> url = @wwwhich sqrt(5.0) open_browser=false
+```
 
 See also: [`@which`](@ref).
 """

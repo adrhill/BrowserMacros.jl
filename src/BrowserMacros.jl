@@ -16,11 +16,20 @@ using HTTP: request
 # Generate macro `@wwwhich` the same way `@which` is generated:
 using InteractiveUtils: gen_call_with_extracted_types
 
+# For `@issue` body:
+using Pkg: status
+using InteractiveUtils: versioninfo
+
 include("utils.jl")
 include("search.jl")
-include("git.jl")
+include("method_url.jl")
+include("wwwhich.jl")
+include("issue.jl")
 
 export google, @google, ddg, @ddg
 export wwwhich, @wwwhich
-export method_url, google_url, ddg_url # low-level functions used to construct URLs
+export issue, @issue
+# Low-level functions used to construct URLs:
+export method_url, repo_url, google_url, ddg_url
+
 end # module

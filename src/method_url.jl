@@ -1,36 +1,6 @@
 const JULIA_REPO = "https://github.com/JuliaLang/julia"
 const PKG_REPO = "https://github.com/JuliaLang/Pkg.jl"
 
-function wwwhich(@nospecialize(f), @nospecialize(types); open_browser=true)
-    return wwwhich(f, types, open_browser)
-end
-function wwwhich(@nospecialize(f), @nospecialize(types), open_browser)
-    method = which(f, types)
-    url = method_url(method)
-
-    try # attempt HTTP request before opening URL in browser
-        r = request("GET", url; retries=5)
-    catch e
-        @warn """BrowserMacros failed to find a valid URL for the method `$(method.name)`.
-            Please open an issue at https://github.com/adrhill/BrowserMacros.jl/issues
-            with the following information:"""
-        display(method)
-        println("Failing URL: $url")
-        return nothing
-    end
-    open_browser && DefaultApplication.open(url)
-    return url
-end
-
-macro wwwhich(ex0, kwargs...)
-    return gen_call_with_extracted_types(__module__, :wwwhich, ex0, map(esc, kwargs))
-end
-
-macro wwwhich(ex0::Symbol, kwargs...)
-    ex0 = QuoteNode(ex0)
-    return :(wwwhich($__module__, $ex0; $(map(esc, kwargs)...)))
-end
-
 # Step 1: determine type of repository
 method_url(m::Method) = method_url(m, Val(repotype(m)))
 
@@ -53,7 +23,7 @@ function method_url(m::Method, ::Val{:stdlib})
 end
 
 function method_url(m::Method, ::Val{:external})
-    path = only(captures(r"/src/(.*)", String(m.file)))
+    path = onlycapture(r"/src/(.*)", String(m.file))
     id = PkgId(m.module)
     url = _url(id)
     ver = _version(id)
@@ -80,41 +50,11 @@ end
 function _url(id::PkgId)
     urls = find_urls(reachable_registries(), id.uuid)
     isempty(urls) && error("Could not find module $id in reachable registries.")
-    return only(captures(r"(.*).git", first(urls)))
+    return first(splitext(first(urls))) # strip ".git" ending
 end
 
-"""
-    wwwhich(f, (types,))
-
-`@which` using the power of the world-wide-web. Opens a GitHub tab in the default browser
-that points to the line of code returned by `which`.
-
-## Examples
-```julia-repl
-julia> wwwhich(sqrt, (Float32,))
-```
-```julia-repl
-julia> url = wwwhich(sqrt, (Float32,); open_browser=false)
-```
-
-See also: [`which`](@ref).
-"""
-wwwhich
-
-"""
-    @wwwhich f(args...)
-
-`@which` using the power of the world-wide-web. Opens a GitHub tab in the default browser
-that points to the line of code returned by `@which`.
-
-## Examples
-```julia-repl
-julia> @wwwhich sqrt(5.0)
-```
-```julia-repl
-julia> url = @wwwhich sqrt(5.0) open_browser=false
-```
-
-See also: [`@which`](@ref).
-"""
-:@wwwhich
+# To avoid code duplication, repo_url trims method_url until the fifth "/", e.g.:
+#  https://github.com/foo/Bar.jl/blob/v0.1.0/src/qux.jl#L7 turns to
+#  https://github.com/foo/Bar.jl
+repo_url(m::Method) = _repo_url(method_url(m))
+_repo_url(url::URI) = URI(onlycapture(r"((?:.*?\/){4}(?:.*?))\/", url.uri))

@@ -18,7 +18,9 @@ using InteractiveUtils: gen_call_with_extracted_types
 
 include("utils.jl")
 include("search.jl")
-include("git.jl")
+include("method_url.jl")
+include("wwwhich.jl")
+# include("issue.jl")
 
 export google, @google, ddg, @ddg
 export wwwhich, @wwwhich

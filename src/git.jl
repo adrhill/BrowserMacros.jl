@@ -68,16 +68,14 @@ function _version(id::PkgId)
         manifest = _manifest(path)
         pkg_entry = get(manifest, id.uuid, nothing)
         ver = hasproperty(pkg_entry, :version) ? pkg_entry.version : nothing
-        isnothing(ver) && continue # look up next environment in LOAD_PATH
-        return ver
+        !isnothing(ver) && return ver # else look up next environment in LOAD_PATH
     end
-    throw(ErrorException("Could not find module $id in project dependencies."))
+    return error("Could not find module $id in project dependencies.")
 end
 
 function _url(id::PkgId)
     urls = find_urls(reachable_registries(), id.uuid)
-    isempty(urls) &&
-        throw(ErrorException("Could not find module $id in reachable registries."))
+    isempty(urls) && error("Could not find module $id in reachable registries.")
     return only(captures(r"(.*).git", first(urls)))
 end
 

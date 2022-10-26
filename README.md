@@ -29,6 +29,16 @@ showing the the exact line of code that is run:
 This also works with code from external packages!
 Since `@wwwhich` opens a permalink, it is perfectly suited for sharing code.
 
+The `@issue` macro will open an issue draft including the project dependencies 
+and the Julia version info:
+```julia
+using Distributions
+
+@issue Normal()
+```
+
+![](https://github.com/adrhill/BrowserMacros.jl/blob/gh-pages/assets/issue.png)
+
 ### Search engines
 Google search and DuckDuckGo can be queried from your REPL:
 ```julia

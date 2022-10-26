@@ -1,4 +1,8 @@
 # BrowserMacros.jl
+## `v0.2.0`
+* ![BREAKING][badge-breaking] All keyword arguments now have to precede the expression / search query (#9)
+* ![Feature][badge-feature] Added keyword arguments to customize `@issue` (#10)
+
 ## `v0.1.2`
 * ![Feature][badge-feature] Add `@issue` macro for automatic issue drafting (#8)
 * ![Feature][badge-feature] Return URL when calling macros (#5)

@@ -1,7 +1,4 @@
 function wwwhich(@nospecialize(f), @nospecialize(types); open_browser=true)
-    return wwwhich(f, types, open_browser)
-end
-function wwwhich(@nospecialize(f), @nospecialize(types), open_browser)
     method = which(f, types)
     url = method_url(method)
     if url_exists(url)
@@ -16,8 +13,8 @@ function wwwhich(@nospecialize(f), @nospecialize(types), open_browser)
     return nothing
 end
 
-macro wwwhich(ex0, kwargs...)
-    return gen_call_with_extracted_types(__module__, :wwwhich, ex0, map(esc, kwargs))
+macro wwwhich(ex0...)
+    return gen_call_with_extracted_types_and_kwargs(__module__, :wwwhich, ex0)
 end
 
 macro wwwhich(ex0::Symbol, kwargs...)
@@ -54,7 +51,7 @@ that points to the line of code returned by `@which`.
 julia> @wwwhich sqrt(5.0)
 ```
 ```julia-repl
-julia> url = @wwwhich sqrt(5.0) open_browser=false
+julia> url = @wwwhich open_browser=false sqrt(5.0)
 ```
 
 See also: [`@which`](@ref).

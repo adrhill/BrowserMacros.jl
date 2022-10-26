@@ -1,7 +1,7 @@
 name = "BrowserMacros"
 uuid = "0e713f60-a330-4a0f-8e30-02c28b77d9ad"
 authors = ["Adrian Hill <adrian.hill@mailbox.org>"]
-version = "0.2.0"
+version = "0.2.1"
 
 [deps]
 DefaultApplication = "3f0dd361-4fe0-5fc6-8523-80b14ec94d85"

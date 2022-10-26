@@ -14,7 +14,7 @@ using Pkg.Operations: find_urls
 using HTTP: request
 
 # Generate macro `@wwwhich` the same way `@which` is generated:
-using InteractiveUtils: gen_call_with_extracted_types
+using InteractiveUtils: gen_call_with_extracted_types_and_kwargs
 
 # For `@issue` body:
 using Pkg: status

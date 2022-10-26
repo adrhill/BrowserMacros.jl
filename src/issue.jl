@@ -38,7 +38,7 @@ function _issue_body()
     println(io, "<details>")
     println(io, "<summary>Version Info</summary>")
     println(io, "\n```")
-    versioninfo(io; verbose=true)
+    versioninfo(io; verbose=false)
     println(io, "```\n")
     println(io, "</details>\n")
     print(

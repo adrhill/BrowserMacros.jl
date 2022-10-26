@@ -30,6 +30,6 @@ export google, @google, ddg, @ddg
 export wwwhich, @wwwhich
 export issue, @issue
 # Low-level functions used to construct URLs:
-export method_url, repo_url, google_url, ddg_url
+export method_url, repo_url
 
 end # module

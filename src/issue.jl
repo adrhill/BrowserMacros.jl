@@ -48,7 +48,7 @@ function _issue_body(
         println(io, "\n```")
         status(; io=io)
         println(io, "```\n")
-        println(io, "</details>")
+        println(io, "</details>\n")
     end
     if _versioninfo
         println(io, "<details>")

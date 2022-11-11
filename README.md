@@ -4,7 +4,7 @@
 
 [![][ci-im]][ci] [![][cov-im]][cov]
 
-Julia macros to access your browser from the comfort of your REPL.  
+Julia macros to surf the web from the comfort of your REPL.
 
 ## Installation 
 To install BrowserMacros, open the Julia REPL and run 
@@ -12,8 +12,8 @@ To install BrowserMacros, open the Julia REPL and run
 julia> ]add BrowserMacros
 ```
 
-⚠️ BrowserMacros currently requires Julia **≥1.7** and is in early development, 
-so there will be a lot of edge-cases to iron out. ⚠️
+BrowserMacros currently requires Julia **≥1.7** and is in early development, 
+so there will be a lot of edge-cases to iron out.
 
 ## Functionality
 ### GitHub

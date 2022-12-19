@@ -1,5 +1,13 @@
 const SEARCH_ENGINES = (
-    :google => "https://www.google.com/search?q=", :ddg => "https://duckduckgo.com/?q="
+    :arxiv          => "https://arxiv.org/search/?query=",
+    :ddg            => "https://duckduckgo.com/?q=",
+    :google         => "https://www.google.com/search?q=",
+    :juliadiscourse => "https://discourse.julialang.org/search?q=",
+    :juliahub       => "https://juliahub.com/ui/Search?q=",
+    :juliazulip     => "https://julialang.zulipchat.com/#narrow/search/",
+    :scholar        => "https://scholar.google.com/scholar?q=",
+    :wikipedia      => "https://en.wikipedia.org/wiki/Special:Search?search=",
+    :youtube        => "https://www.youtube.com/results?search_query=",
 )
 
 for (fname, url) in SEARCH_ENGINES
@@ -46,9 +54,9 @@ for fname in map(first, SEARCH_ENGINES)
 
         ## Examples
         ```julia
-        $($name)("Why is julialang called Julia?") # opens default browser
+        $($name)("My search query") # opens default browser
 
-        url = $($name)("Why is julialang called Julia?"; open_browser=false)
+        url = $($name)("My search query"; open_browser=false)
         ```
         """ $fname
     end
@@ -62,9 +70,9 @@ for fname in map(first, SEARCH_ENGINES)
 
         ## Examples
         ```julia
-        @$($name) "Why is julialang called Julia?" # opens default browser
+        @$($name) "My search query" # opens default browser
 
-        url = @$($name) open_browser=false "Why is julialang called Julia?"
+        url = @$($name) open_browser=false "My search query"
         ```
         """ $(Symbol("@$name"))
     end

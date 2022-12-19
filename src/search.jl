@@ -1,4 +1,4 @@
-const SEARCH_ENGINES = (
+const SEARCH_FUNCTIONS = (
     :arxiv     => "https://arxiv.org/search/?query=",
     :ddg       => "https://duckduckgo.com/?q=",
     :discourse => "https://discourse.julialang.org/search?q=",
@@ -9,8 +9,9 @@ const SEARCH_ENGINES = (
     :youtube   => "https://www.youtube.com/results?search_query=",
     :zulip     => "https://julialang.zulipchat.com/#narrow/search/",
 )
+const SEARCH_FUNCTION_NAMES = first.(SEARCH_FUNCTIONS)
 
-for (fname, url) in SEARCH_ENGINES
+for (fname, url) in SEARCH_FUNCTIONS
     @eval begin
         function ($fname)(query::AbstractString; open_browser=true)
             url = URI(($url) * escapeuri(query))
@@ -20,7 +21,7 @@ for (fname, url) in SEARCH_ENGINES
     end
 end
 
-for fname in map(first, SEARCH_ENGINES)
+for fname in SEARCH_FUNCTION_NAMES
     @eval begin
         macro ($fname)(ex0...)
             # kwarg parsing adapted from InteractiveUtils' gen_call_with_extracted_types_and_kwargs
@@ -43,7 +44,7 @@ for fname in map(first, SEARCH_ENGINES)
 end
 
 # Docstrings
-for fname in map(first, SEARCH_ENGINES)
+for fname in SEARCH_FUNCTION_NAMES
     name = string(fname)
     @eval begin
         @doc """

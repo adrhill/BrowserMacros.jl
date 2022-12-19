@@ -1,13 +1,13 @@
 const SEARCH_ENGINES = (
-    :arxiv          => "https://arxiv.org/search/?query=",
-    :ddg            => "https://duckduckgo.com/?q=",
-    :google         => "https://www.google.com/search?q=",
-    :juliadiscourse => "https://discourse.julialang.org/search?q=",
-    :juliahub       => "https://juliahub.com/ui/Search?q=",
-    :juliazulip     => "https://julialang.zulipchat.com/#narrow/search/",
-    :scholar        => "https://scholar.google.com/scholar?q=",
-    :wikipedia      => "https://en.wikipedia.org/wiki/Special:Search?search=",
-    :youtube        => "https://www.youtube.com/results?search_query=",
+    :arxiv     => "https://arxiv.org/search/?query=",
+    :ddg       => "https://duckduckgo.com/?q=",
+    :discourse => "https://discourse.julialang.org/search?q=",
+    :google    => "https://www.google.com/search?q=",
+    :juliahub  => "https://juliahub.com/ui/Search?q=",
+    :scholar   => "https://scholar.google.com/scholar?q=",
+    :wikipedia => "https://en.wikipedia.org/wiki/Special:Search?search=",
+    :youtube   => "https://www.youtube.com/results?search_query=",
+    :zulip     => "https://julialang.zulipchat.com/#narrow/search/",
 )
 
 for (fname, url) in SEARCH_ENGINES

@@ -34,11 +34,11 @@ export method_url, repo_url
 # Search engines from search.jl:
 export arxiv, @arxiv
 export ddg, @ddg
+export discourse, @discourse
 export google, @google
-export juliadiscourse, @juliadiscourse
 export juliahub, @juliahub
-export juliazulip, @juliazulip
 export scholar, @scholar
 export wikipedia, @wikipedia
 export youtube, @youtube
+export zulip, @zulip
 end # module

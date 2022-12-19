@@ -38,7 +38,8 @@ url = wwwhich(DefaultApplication.open, (String,); open_browser=false)
 )
 
 # Test @issue
-url = @issue text="test" open_browser=false status=false versioninfo=false footer=false sqrt(5)
+url = @issue text = "test" open_browser = false status = false versioninfo = false footer =
+    false sqrt(5)
 @test url == URI("https://github.com/JuliaLang/julia/issues/new?body=test%0A")
 
 @test open_browser == 42 # Test macro hygiene

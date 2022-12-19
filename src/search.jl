@@ -1,8 +1,17 @@
-const SEARCH_ENGINES = (
-    :google => "https://www.google.com/search?q=", :ddg => "https://duckduckgo.com/?q="
+const SEARCH_FUNCTIONS = (
+    :arxiv     => "https://arxiv.org/search/?query=",
+    :ddg       => "https://duckduckgo.com/?q=",
+    :discourse => "https://discourse.julialang.org/search?q=",
+    :google    => "https://www.google.com/search?q=",
+    :juliahub  => "https://juliahub.com/ui/Search?q=",
+    :scholar   => "https://scholar.google.com/scholar?q=",
+    :wikipedia => "https://en.wikipedia.org/wiki/Special:Search?search=",
+    :youtube   => "https://www.youtube.com/results?search_query=",
+    :zulip     => "https://julialang.zulipchat.com/#narrow/search/",
 )
+const SEARCH_FUNCTION_NAMES = first.(SEARCH_FUNCTIONS)
 
-for (fname, url) in SEARCH_ENGINES
+for (fname, url) in SEARCH_FUNCTIONS
     @eval begin
         function ($fname)(query::AbstractString; open_browser=true)
             url = URI(($url) * escapeuri(query))
@@ -12,7 +21,7 @@ for (fname, url) in SEARCH_ENGINES
     end
 end
 
-for fname in map(first, SEARCH_ENGINES)
+for fname in SEARCH_FUNCTION_NAMES
     @eval begin
         macro ($fname)(ex0...)
             # kwarg parsing adapted from InteractiveUtils' gen_call_with_extracted_types_and_kwargs
@@ -35,7 +44,7 @@ for fname in map(first, SEARCH_ENGINES)
 end
 
 # Docstrings
-for fname in map(first, SEARCH_ENGINES)
+for fname in SEARCH_FUNCTION_NAMES
     name = string(fname)
     @eval begin
         @doc """
@@ -46,9 +55,9 @@ for fname in map(first, SEARCH_ENGINES)
 
         ## Examples
         ```julia
-        $($name)("Why is julialang called Julia?") # opens default browser
+        $($name)("My search query") # opens default browser
 
-        url = $($name)("Why is julialang called Julia?"; open_browser=false)
+        url = $($name)("My search query"; open_browser=false)
         ```
         """ $fname
     end
@@ -62,9 +71,9 @@ for fname in map(first, SEARCH_ENGINES)
 
         ## Examples
         ```julia
-        @$($name) "Why is julialang called Julia?" # opens default browser
+        @$($name) "My search query" # opens default browser
 
-        url = @$($name) open_browser=false "Why is julialang called Julia?"
+        url = @$($name) open_browser=false "My search query"
         ```
         """ $(Symbol("@$name"))
     end

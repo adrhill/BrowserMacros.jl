@@ -26,10 +26,19 @@ include("method_url.jl")
 include("wwwhich.jl")
 include("issue.jl")
 
-export google, @google, ddg, @ddg
 export wwwhich, @wwwhich
 export issue, @issue
 # Low-level functions used to construct URLs:
 export method_url, repo_url
 
+# Search engines from search.jl:
+export arxiv, @arxiv
+export ddg, @ddg
+export discourse, @discourse
+export google, @google
+export juliahub, @juliahub
+export scholar, @scholar
+export wikipedia, @wikipedia
+export youtube, @youtube
+export zulip, @zulip
 end # module

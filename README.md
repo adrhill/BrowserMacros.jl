@@ -40,16 +40,25 @@ using Distributions
 ![](https://github.com/adrhill/BrowserMacros.jl/blob/gh-pages/assets/issue.png)
 
 ### Search engines
-Google search and DuckDuckGo can be queried from your REPL:
+Several search engines can be queried from your REPL:
 ```julia
 @google "How to write macros in Julia"  
 ```
 
-Since these are regular queries, [DuckDuckGo's bangs](https://duckduckgo.com/bang) are supported, 
-e.g. to search for papers on Google Scholar: 
-```julia
-@dgg "!scholar Julia - A Fresh Approach to Numerical Computing"                     
-```
+The search engines currently include:
+| Name              | Macro        | 
+|:------------------|:-------------|
+| arXiv             | `@arxiv`     |
+| DuckDuckGo        | `@ddg`       |
+| Google            | `@google`    |
+| JuliaHub          | `@juliahub`  |
+| Julia Discourse   | `@discourse` |
+| Julia Zulip       | `@zulip`     |
+| Google Scholar    | `@scholar`   |
+| Wikipedia         | `@wikipedia` | 
+| YouTube           | `@youtube`   |
+
+Please open an issue if your favorite search engine is missing!
 
 ## How does it work?
 BrowserMacros constructs URLs and opens them using [DefaultApplication.jl](https://github.com/tpapp/DefaultApplication.jl). 

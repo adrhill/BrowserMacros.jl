@@ -33,12 +33,24 @@ export method_url, repo_url
 
 # Search engines from search.jl:
 export arxiv, @arxiv
+export baidu, @baidu
+export bing, @bing
+export brave, @brave
 export ddg, @ddg
 export discourse, @discourse
+export ecosia, @ecosia
+export github, @github
+export goodreads, @goodreads
 export google, @google
 export juliahub, @juliahub
+export qwant, @qwant
 export scholar, @scholar
+export stackoverflow, @stackoverflow
+export webarchive, @webarchive
 export wikipedia, @wikipedia
+export wolframalpha, @wolframalpha
+export yahoo, @yahoo
+export yandex, @yandex
 export youtube, @youtube
 export zulip, @zulip
 end # module

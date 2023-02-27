@@ -46,17 +46,30 @@ Several search engines can be queried from your REPL:
 ```
 
 The search engines currently include:
-| Name              | Macro        | 
-|:------------------|:-------------|
-| arXiv             | `@arxiv`     |
-| DuckDuckGo        | `@ddg`       |
-| Google            | `@google`    |
-| JuliaHub          | `@juliahub`  |
-| Julia Discourse   | `@discourse` |
-| Julia Zulip       | `@zulip`     |
-| Google Scholar    | `@scholar`   |
-| Wikipedia         | `@wikipedia` | 
-| YouTube           | `@youtube`   |
+| Name            | Macro            | 
+|:----------------|:-----------------|
+| arXiv           | `@arxiv`         |
+| Baidu           | `@baidu`         |
+| Bing            | `@bing`          |
+| Brave           | `@brave`         |
+| DuckDuckGo      | `@ddg`           |
+| Ecosia          | `@ecosia`        |
+| GitHub          | `@github`        |
+| Goodreads       | `@goodreads`     | 
+| Google          | `@google`        |
+| Google Scholar  | `@scholar`       |
+| JuliaHub        | `@juliahub`      |
+| Julia Discourse | `@discourse`     |
+| Julia Zulip     | `@zulip`         |
+| Qwant           | `@qwant`         |
+| Stack Overflow  | `@stackoverflow` |
+| Web Archive     | `@webarchive`    |
+| Wikipedia       | `@wikipedia`     | 
+| Wolfram Alpha   | `@wolframalpha`  |
+| Yahoo           | `@yahoo`         |
+| Yandex          | `@yandex`        |
+| YouTube         | `@youtube`       |
+
 
 Please open an issue if your favorite search engine is missing!
 

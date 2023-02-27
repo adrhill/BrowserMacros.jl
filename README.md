@@ -45,6 +45,7 @@ Several search engines can be queried from your REPL:
 @google "How to write macros in Julia"  
 ```
 
+For each macro, a corresponding function is also exported.
 The search engines currently include:
 | Name            | Macro            | 
 |:----------------|:-----------------|

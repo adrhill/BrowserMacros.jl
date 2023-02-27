@@ -9,20 +9,43 @@ const SEARCH_FUNCTIONS = (
     :youtube   => "https://www.youtube.com/results?search_query=",
     :zulip     => "https://julialang.zulipchat.com/#narrow/search/",
 )
-const SEARCH_FUNCTION_NAMES = first.(SEARCH_FUNCTIONS)
 
 for (fname, url) in SEARCH_FUNCTIONS
+    name = string(fname)
+
     @eval begin
+        """
+            $($name)(query::String)
+
+        Open a tab with the specified search query in the default browser.
+        Also usable as the macro [`@$($name)`](@ref).
+
+        ## Examples
+        ```julia
+        $($name)("My search query") # opens default browser
+
+        url = $($name)("My search query"; open_browser=false)
+        ```
+        """
         function ($fname)(query::AbstractString; open_browser=true)
             url = URI(($url) * escapeuri(query))
             open_browser && DefaultApplication.open(url)
             return url
         end
-    end
-end
 
-for fname in SEARCH_FUNCTION_NAMES
-    @eval begin
+        """
+            @$($name) query
+
+        Open a tab with the specified search query in the default browser.
+        Also usable as the function [`$($name)`](@ref).
+
+        ## Examples
+        ```julia
+        @$($name) "My search query" # opens default browser
+
+        url = @$($name) open_browser=false "My search query"
+        ```
+        """
         macro ($fname)(ex0...)
             # kwarg parsing adapted from InteractiveUtils' gen_call_with_extracted_types_and_kwargs
             kwargs = Expr[]
@@ -40,41 +63,5 @@ for fname in SEARCH_FUNCTION_NAMES
             end
             return :($(Expr(:quote, $(fname)))($query; $(kwargs...)))
         end
-    end
-end
-
-# Docstrings
-for fname in SEARCH_FUNCTION_NAMES
-    name = string(fname)
-    @eval begin
-        @doc """
-            $($name)(query::String)
-
-        Open a tab with the specified search query in the default browser.
-        Also usable as the macro [`@$($name)`](@ref).
-
-        ## Examples
-        ```julia
-        $($name)("My search query") # opens default browser
-
-        url = $($name)("My search query"; open_browser=false)
-        ```
-        """ $fname
-    end
-
-    @eval begin
-        @doc """
-            @$($name) query
-
-        Open a tab with the specified search query in the default browser.
-        Also usable as the function [`$($name)`](@ref).
-
-        ## Examples
-        ```julia
-        @$($name) "My search query" # opens default browser
-
-        url = @$($name) open_browser=false "My search query"
-        ```
-        """ $(Symbol("@$name"))
     end
 end

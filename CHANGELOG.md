@@ -1,16 +1,35 @@
 # BrowserMacros.jl
+## `v0.2.3`
+* ![Maintenance][badge-maintenance] Simplified search engine code ([#14][pr-14])
+* ![Feature][badge-feature] Added new search macros ([#14][pr-14])
+
+    | Name           | Macro            | 
+    |:---------------|:-----------------|
+    | Baidu          | `@baidu`         |
+    | Bing           | `@bing`          |
+    | Brave          | `@brave`         |
+    | Ecosia         | `@ecosia`        |
+    | GitHub         | `@github`        |
+    | Goodreads      | `@goodreads`     | 
+    | Qwant          | `@qwant`         |
+    | Stack Overflow | `@stackoverflow` |
+    | Web Archive    | `@webarchive`    |
+    | Wolfram Alpha  | `@wolframalpha`  |
+    | Yahoo          | `@yahoo`         |
+    | Yandex         | `@yandex`        |
+
 ## `v0.2.2`
 * ![Feature][badge-feature] Added new search macros ([#13][pr-13])
 
-    | Name              | Macro        | 
-    |:------------------|:-------------|
-    | arXiv             | `@arxiv`     |
-    | JuliaHub          | `@juliahub`  |
-    | Julia Discourse   | `@discourse` |
-    | Julia Zulip       | `@zulip`     |
-    | Google Scholar    | `@scholar`   |
-    | Wikipedia         | `@wikipedia` | 
-    | YouTube           | `@youtube`   |
+    | Name            | Macro        | 
+    |:----------------|:-------------|
+    | arXiv           | `@arxiv`     |
+    | JuliaHub        | `@juliahub`  |
+    | Julia Discourse | `@discourse` |
+    | Julia Zulip     | `@zulip`     |
+    | Google Scholar  | `@scholar`   |
+    | Wikipedia       | `@wikipedia` | 
+    | YouTube         | `@youtube`   |
 
 ## `v0.2.1`
 * ![Maintenance][badge-maintenance] Simplified search engine code
@@ -30,6 +49,7 @@
 ## `v0.1.0`
 * Initial functionality
 
+[pr-14]: https://github.com/adrhill/BrowserMacros.jl/pull/14
 [pr-13]: https://github.com/adrhill/BrowserMacros.jl/pull/13
 [pr-10]: https://github.com/adrhill/BrowserMacros.jl/pull/10
 [pr-9]: https://github.com/adrhill/BrowserMacros.jl/pull/9

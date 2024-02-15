@@ -1,4 +1,7 @@
 # BrowserMacros.jl
+## `v0.2.4`
+* ![Feature][badge-feature] Added ChatGPT macro `@chatgpt`
+
 ## `v0.2.3`
 * ![Maintenance][badge-maintenance] Simplified search engine code ([#14][pr-14])
 * ![Feature][badge-feature] Added new search macros ([#14][pr-14])

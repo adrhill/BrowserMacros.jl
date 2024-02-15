@@ -3,6 +3,7 @@ const SEARCH_FUNCTIONS = (
     :baidu         => "https://www.baidu.com/s?wd=",
     :bing          => "https://www.bing.com/search?q=",
     :brave         => "https://search.brave.com/search?q=",
+    :chatgpt       => "https://chat.openai.com/chat?q=",
     :ddg           => "https://duckduckgo.com/?q=",
     :discourse     => "https://discourse.julialang.org/search?q=",
     :ecosia        => "https://www.ecosia.org/search?q=",
@@ -47,7 +48,6 @@ for (fname, url) in SEARCH_FUNCTIONS
 
         """
             @$($name) query
-
         Open a tab with the specified search query in the default browser.
         Also usable as the function [`$($name)`](@ref).
 

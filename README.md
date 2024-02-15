@@ -53,6 +53,7 @@ The search engines currently include:
 | Baidu           | `@baidu`         |
 | Bing            | `@bing`          |
 | Brave           | `@brave`         |
+| ChatGPT         | `@chatgpt`       |
 | DuckDuckGo      | `@ddg`           |
 | Ecosia          | `@ecosia`        |
 | GitHub          | `@github`        |

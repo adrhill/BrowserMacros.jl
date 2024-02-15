@@ -1,16 +1,8 @@
 function wwwhich(@nospecialize(f), @nospecialize(types); open_browser=true)
     method = which(f, types)
     url = method_url(method)
-    if url_exists(url)
-        open_browser && DefaultApplication.open(url)
-        return url
-    end
-    @warn """BrowserMacros failed to find a valid URL for the method `$(method.name)`.
-    Please open an issue at https://github.com/adrhill/BrowserMacros.jl/issues
-    with the following information:"""
-    display(method)
-    println("Failing URL: $url")
-    return nothing
+    open_browser && DefaultApplication.open(url)
+    return url
 end
 
 macro wwwhich(ex0...)

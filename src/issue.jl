@@ -12,18 +12,10 @@ function issue(
 )
     method = which(f, types)
     repository = repo_url(method)
-    if url_exists(repository)
-        body = _issue_body(text, status, versioninfo, verbose, footer)
-        url = URI("$repository/issues/new?body=$body")
-        open_browser && DefaultApplication.open(url)
-        return url
-    end
-    @warn """BrowserMacros failed to find a valid repository for the method `$(method.name)`.
-    Please open an issue at https://github.com/adrhill/BrowserMacros.jl/issues
-    with the following information:"""
-    display(method)
-    println("Failing repository URL: $repository")
-    return nothing
+    body = _issue_body(text, status, versioninfo, verbose, footer)
+    url = URI("$repository/issues/new?body=$body")
+    open_browser && DefaultApplication.open(url)
+    return url
 end
 
 macro issue(ex0...)
